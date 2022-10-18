@@ -40,7 +40,6 @@ class GoeChargerStatusMapper:
             except IndexError:
                 return 0
 
-        # MM: no proper documentation which index belongs to which phase
         phase = status.get("pha", [])
         pre_contactor_l3 = valueOrNull(phase, 0)
         pre_contactor_l2 = valueOrNull(phase, 1)
@@ -158,7 +157,7 @@ class GoeChargerStatusMapper:
             "timezone_offset": timezone_offset,
             "timezone_dst_offset": timezone_dst_offset,
             "allowed_ampere": int(status.get("acu", 0))
-            if status.get("acu") is "null"
+            if status.get("acu") == "null"
             else None,
             "energy_since_car_connected": float(status.get("wh", 0)),
             "charging_duration": status.get("cdi", None),
@@ -341,7 +340,7 @@ class GoeChargerApi:
         response = {}
         try:
             status = self.__query_status_api()
-            if status.get("success") == False:
+            if status is None or status.get("success") == False:
                 raise RuntimeError("Request failed with: %s" % status)
 
             response = GoeChargerStatusMapper().map_api_status_response(status)

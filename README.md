@@ -27,3 +27,17 @@ charger = GoeChargerApi('provide_api_url', 'provide_api_token')
  
 print(charger.request_status())
 ```
+
+## Development
+
+### Linting
+
+```bash
+pylint *.py
+```
+
+### Unit testing
+
+```bash
+python3 -m unittest -v tests/*.py
+```
