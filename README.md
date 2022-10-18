@@ -1,6 +1,7 @@
 # goechargerv2
 
 ![workflow](https://github.com/openkfw/goechargerv2/actions/workflows/python-ci.yml/badge.svg)
+![workflow](https://github.com/openkfw/goechargerv2/actions/workflows/python-publish.yml/badge.svg)
 
 A python API to access the Go eCharger wallbox. Official Go-eCharger [API documentation](https://github.com/goecharger/go-eCharger-API-v2).
 
