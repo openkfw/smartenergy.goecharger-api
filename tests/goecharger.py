@@ -1,10 +1,10 @@
+"""Test cases for the main Go-eCharger module"""
 import unittest
 import sys
 from unittest import mock
+from src.goecharger.goecharger import GoeChargerStatusMapper, GoeChargerApi
 
 sys.path.append("../src")
-
-from src.goecharger.goecharger import GoeChargerStatusMapper, GoeChargerApi
 
 REQUEST_RESPONSE = {
     "car": 1,
@@ -107,26 +107,35 @@ EXPECTED_MAPPED_RESPONSE = {
 }
 
 
+# pylint: disable=unused-argument
+def mocked_requests_get(*args, **kwargs):
+    """Module handling mocked API requests"""
+
+    class MockResponse:
+        """Class handling mocked API responses"""
+
+        def __init__(self, json_data, status_code):
+            self.json_data = json_data
+            self.status_code = status_code
+
+        def json(self):
+            """Return data as a JSON"""
+            return self.json_data
+
+    if args[0] == "http://localhost:3000/api/status?age=50000":
+        return MockResponse(REQUEST_RESPONSE, 200)
+
+    if args[0] == "http://localhost:3001/api/status?age=50000":
+        return MockResponse(None, 200)
+
+    return MockResponse(None, 404)
+
+
 class Test(unittest.TestCase):
-    def mocked_requests_get(*args, **kwargs):
-        class MockResponse:
-            def __init__(self, json_data, status_code):
-                self.json_data = json_data
-                self.status_code = status_code
-
-            def json(self):
-                return self.json_data
-
-        if args[0] == "http://localhost:3000/api/status?age=50000":
-            return MockResponse(REQUEST_RESPONSE, 200)
-
-        if args[0] == "http://localhost:3001/api/status?age=50000":
-            return MockResponse(None, 200)
-
-        return MockResponse(None, 404)
+    """Unit tests testing mapping of the response and API calls."""
 
     def test_status_mapping_response(self) -> None:
-        self.maxDiff = None
+        """Test if response mapper correctly transforms property names"""
         status_mapper = GoeChargerStatusMapper()
         self.assertDictEqual(
             status_mapper.map_api_status_response(REQUEST_RESPONSE),
@@ -138,7 +147,7 @@ class Test(unittest.TestCase):
         mock.Mock(side_effect=mocked_requests_get),
     )
     def test_request_status_ok(self) -> None:
-        self.maxDiff = None
+        """Test if status request returns a valid response in case the API call succeeds"""
         api = GoeChargerApi("http://localhost:3000", "TOKEN")
         self.assertDictEqual(
             api.request_status(),
@@ -150,7 +159,7 @@ class Test(unittest.TestCase):
         mock.Mock(side_effect=mocked_requests_get),
     )
     def test_request_status_error(self) -> None:
-        self.maxDiff = None
+        """Test if status request raises an error in case the API call fails"""
         api = GoeChargerApi("http://localhost:3001", "TOKEN")
         self.assertRaises(RuntimeError, api.request_status)
 

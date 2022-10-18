@@ -1,13 +1,14 @@
 """Go-eCharger API module, documentation: https://go-e.co/app/api.pdf"""
 
-import requests
 import threading
-
 from typing import Literal
 from json.decoder import JSONDecodeError
+import requests
+
 from .validations import validate_empty_string
 
 
+# pylint: disable=too-many-locals
 class GoeChargerStatusMapper:
     """
     Mapping class to map properties into more human readable names.
@@ -34,28 +35,28 @@ class GoeChargerStatusMapper:
         cable_max_current = int(status.get("cbl", 0) or 0)
         cable_lock_mode = int(status.get("ust", 0))
 
-        def valueOrNull(array, index):
+        def value_or_null(array, index):
             try:
                 return array[index]
             except IndexError:
                 return 0
 
         phase = status.get("pha", [])
-        pre_contactor_l3 = valueOrNull(phase, 0)
-        pre_contactor_l2 = valueOrNull(phase, 1)
-        pre_contactor_l1 = valueOrNull(phase, 2)
-        post_contactor_l3 = valueOrNull(phase, 3)
-        post_contactor_l2 = valueOrNull(phase, 4)
-        post_contactor_l1 = valueOrNull(phase, 5)
+        pre_contactor_l3 = value_or_null(phase, 0)
+        pre_contactor_l2 = value_or_null(phase, 1)
+        pre_contactor_l1 = value_or_null(phase, 2)
+        post_contactor_l3 = value_or_null(phase, 3)
+        post_contactor_l2 = value_or_null(phase, 4)
+        post_contactor_l1 = value_or_null(phase, 5)
 
         phase_switch_mode = status.get("psm", 0)
 
         if len(status.get("tma", [])) > 0:
-            t0 = float(valueOrNull(status.get("tma", []), GoeChargerApi.TMA_0))
-            t1 = float(valueOrNull(status.get("tma", []), GoeChargerApi.TMA_1))
-            t2 = float(valueOrNull(status.get("tma", []), GoeChargerApi.TMA_2))
-            t3 = float(valueOrNull(status.get("tma", []), GoeChargerApi.TMA_3))
-            charger_temp = round(int((t0 + t1 + t2 + t3) / 4), 2)
+            t_0 = float(value_or_null(status.get("tma", []), GoeChargerApi.TMA_0))
+            t_1 = float(value_or_null(status.get("tma", []), GoeChargerApi.TMA_1))
+            t_2 = float(value_or_null(status.get("tma", []), GoeChargerApi.TMA_2))
+            t_3 = float(value_or_null(status.get("tma", []), GoeChargerApi.TMA_3))
+            charger_temp = round(int((t_0 + t_1 + t_2 + t_3) / 4), 2)
         else:
             charger_temp = int(
                 status.get("tmp", 0)
@@ -116,16 +117,16 @@ class GoeChargerStatusMapper:
             "phase_switch_mode": phase_switch_mode,
             "charger_temp": charger_temp,  # Deprecated: Just for chargers with old firmware
             "charger_temp0": round(
-                float(valueOrNull(status.get("tma", []), GoeChargerApi.TMA_0)), 2
+                float(value_or_null(status.get("tma", []), GoeChargerApi.TMA_0)), 2
             ),
             "charger_temp1": round(
-                float(valueOrNull(status.get("tma", []), GoeChargerApi.TMA_1)), 2
+                float(value_or_null(status.get("tma", []), GoeChargerApi.TMA_1)), 2
             ),
             "charger_temp2": round(
-                float(valueOrNull(status.get("tma", []), GoeChargerApi.TMA_2)), 2
+                float(value_or_null(status.get("tma", []), GoeChargerApi.TMA_2)), 2
             ),
             "charger_temp3": round(
-                float(valueOrNull(status.get("tma", []), GoeChargerApi.TMA_3)), 2
+                float(value_or_null(status.get("tma", []), GoeChargerApi.TMA_3)), 2
             ),
             "current_session_charged_energy": round(current_session_charged_energy, 5),
             "charging_limit": charge_limit,
@@ -134,23 +135,29 @@ class GoeChargerStatusMapper:
             "energy_total": energy_total,
             "energy_by_token": energy_by_token,
             "wifi": wifi,
-            "u_l1": int(valueOrNull(status.get("nrg", []), GoeChargerApi.U_L1)),
-            "u_l2": int(valueOrNull(status.get("nrg", []), GoeChargerApi.U_L2)),
-            "u_l3": int(valueOrNull(status.get("nrg", []), GoeChargerApi.U_L3)),
-            "u_n": int(valueOrNull(status.get("nrg", []), GoeChargerApi.U_N)),
-            "i_l1": int(valueOrNull(status.get("nrg", []), GoeChargerApi.I_L1)) / 10.0,
-            "i_l2": int(valueOrNull(status.get("nrg", []), GoeChargerApi.I_L2)) / 10.0,
-            "i_l3": int(valueOrNull(status.get("nrg", []), GoeChargerApi.I_L3)) / 10.0,
-            "p_l1": int(valueOrNull(status.get("nrg", []), GoeChargerApi.P_L1)) / 10.0,
-            "p_l2": int(valueOrNull(status.get("nrg", []), GoeChargerApi.P_L2)) / 10.0,
-            "p_l3": int(valueOrNull(status.get("nrg", []), GoeChargerApi.P_L3)) / 10.0,
-            "p_n": int(valueOrNull(status.get("nrg", []), GoeChargerApi.P_N)) / 10.0,
-            "p_all": int(valueOrNull(status.get("nrg", []), GoeChargerApi.P_ALL))
+            "u_l1": int(value_or_null(status.get("nrg", []), GoeChargerApi.U_L1)),
+            "u_l2": int(value_or_null(status.get("nrg", []), GoeChargerApi.U_L2)),
+            "u_l3": int(value_or_null(status.get("nrg", []), GoeChargerApi.U_L3)),
+            "u_n": int(value_or_null(status.get("nrg", []), GoeChargerApi.U_N)),
+            "i_l1": int(value_or_null(status.get("nrg", []), GoeChargerApi.I_L1))
+            / 10.0,
+            "i_l2": int(value_or_null(status.get("nrg", []), GoeChargerApi.I_L2))
+            / 10.0,
+            "i_l3": int(value_or_null(status.get("nrg", []), GoeChargerApi.I_L3))
+            / 10.0,
+            "p_l1": int(value_or_null(status.get("nrg", []), GoeChargerApi.P_L1))
+            / 10.0,
+            "p_l2": int(value_or_null(status.get("nrg", []), GoeChargerApi.P_L2))
+            / 10.0,
+            "p_l3": int(value_or_null(status.get("nrg", []), GoeChargerApi.P_L3))
+            / 10.0,
+            "p_n": int(value_or_null(status.get("nrg", []), GoeChargerApi.P_N)) / 10.0,
+            "p_all": int(value_or_null(status.get("nrg", []), GoeChargerApi.P_ALL))
             / 100.0,
-            "lf_l1": int(valueOrNull(status.get("nrg", []), GoeChargerApi.LF_L1)),
-            "lf_l2": int(valueOrNull(status.get("nrg", []), GoeChargerApi.LF_L2)),
-            "lf_l3": int(valueOrNull(status.get("nrg", []), GoeChargerApi.LF_L3)),
-            "lf_n": int(valueOrNull(status.get("nrg", []), GoeChargerApi.LF_N)),
+            "lf_l1": int(value_or_null(status.get("nrg", []), GoeChargerApi.LF_L1)),
+            "lf_l2": int(value_or_null(status.get("nrg", []), GoeChargerApi.LF_L2)),
+            "lf_l3": int(value_or_null(status.get("nrg", []), GoeChargerApi.LF_L3)),
+            "lf_n": int(value_or_null(status.get("nrg", []), GoeChargerApi.LF_N)),
             "firmware": firmware,
             "serial_number": serial_number,
             "wifi_enabled": wifi_enabled,
@@ -243,10 +250,10 @@ class GoeChargerApi:
         Generic method to get status with all parameters via the API call.
         """
         try:
-            headers = {"Authorization": "Basic %s" % self.token}
+            headers = {"Authorization": f"Basic {self.token}"}
 
             status_request = requests.get(
-                "%s/api/status?age=50000" % self.host,
+                f"{self.host}/api/status?age=50000",
                 headers=headers,
                 timeout=self.timeout,
             )
@@ -270,8 +277,8 @@ class GoeChargerApi:
 
         if fetched_value_int != value_int and retry == 0:
             raise ValueError(
-                "Couldn't verify %s, expected value=%s, received value=%s"
-                % (parameter, value_int, fetched_value_int)
+                f"""Couldn't verify {parameter}, expected value={value_int},
+                 received value={fetched_value_int}"""
             )
 
         if fetched_value_int != value_int and retry > 0:
@@ -283,12 +290,12 @@ class GoeChargerApi:
         """
         Generic method to set any parameter and call the API.
         """
-        headers = {"Authorization": "Basic %s" % self.token}
+        headers = {"Authorization": f"Basic {self.token}"}
 
         payload = {}
         payload[parameter] = value
         set_request = requests.get(
-            "%s/api/set?age=50000" % self.host,
+            f"{self.host}/api/set?age=50000",
             headers=headers,
             params=payload,
             timeout=self.timeout,
@@ -308,17 +315,18 @@ class GoeChargerApi:
         """
         if allow:
             return self.__set_parameter("frc", 2)
-        else:
-            return self.__set_parameter("frc", 1)
+
+        return self.__set_parameter("frc", 1)
 
     def set_max_current(self, current) -> dict:
         """
         Sets the current in Amperes. Minimum is 0, maximum is 32 Amperes.
         """
         if current < 0:
-            current = 0
+            return self.__set_parameter("amp", str(0))
         if current > 32:
-            current = 32
+            return self.__set_parameter("amp", str(32))
+
         return self.__set_parameter("amp", str(current))
 
     def set_phase(self, phase) -> dict | None:
@@ -330,8 +338,8 @@ class GoeChargerApi:
         """
         if phase in [0, 1, 2]:
             return self.__set_parameter("psm", str(phase))
-        else:
-            return
+
+        raise ValueError(f"phase={phase} is unsupported")
 
     def request_status(self) -> dict:
         """
@@ -340,8 +348,8 @@ class GoeChargerApi:
         response = {}
         try:
             status = self.__query_status_api()
-            if status is None or status.get("success") == False:
-                raise RuntimeError("Request failed with: %s" % status)
+            if status is None or status.get("success") is False:
+                raise RuntimeError(f"Request failed with: {status}")
 
             response = GoeChargerStatusMapper().map_api_status_response(status)
         except JSONDecodeError:

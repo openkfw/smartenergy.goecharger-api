@@ -1,7 +1,8 @@
+"""Go-eCharger API examples"""
 import os
 
-from goecharger.goecharger import GoeChargerApi
 from dotenv import load_dotenv
+from goecharger.goecharger import GoeChargerApi
 
 load_dotenv()
 
