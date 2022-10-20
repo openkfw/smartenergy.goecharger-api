@@ -2,7 +2,7 @@
 import unittest
 import sys
 from unittest import mock
-from src.goecharger.goecharger import GoeChargerStatusMapper, GoeChargerApi
+from src.goechargerv2.goecharger import GoeChargerStatusMapper, GoeChargerApi
 
 sys.path.append("../src")
 

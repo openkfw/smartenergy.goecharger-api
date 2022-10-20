@@ -22,7 +22,7 @@ GOE_API_URL="https://REPLACE_ME.api.v3.go-e.io" GOE_API_TOKEN="REPLACE_ME" pytho
 or
 
 ```python
-from goecharger.goecharger import GoeChargerApi
+from goechargerv2.goecharger import GoeChargerApi
 
 charger = GoeChargerApi('provide_api_url', 'provide_api_token')
 # or you can define additional optional parameters
