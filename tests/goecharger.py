@@ -147,7 +147,6 @@ class Test(unittest.TestCase):
     )
     def test_request_status_ok(self) -> None:
         """Test if status request returns a valid response in case the API call succeeds"""
-        self.maxDiff = None
         api = GoeChargerApi("http://localhost:3000", "TOKEN")
         self.assertDictEqual(
             api.request_status(),
