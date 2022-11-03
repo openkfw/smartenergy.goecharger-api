@@ -1,10 +1,9 @@
 """Test cases for the main Go-eCharger module"""
 import unittest
-import sys
+
 from unittest import mock
 from src.goechargerv2.goecharger import GoeChargerStatusMapper, GoeChargerApi
 
-sys.path.append("../src")
 
 REQUEST_RESPONSE = {
     "car": 1,
@@ -148,6 +147,7 @@ class Test(unittest.TestCase):
     )
     def test_request_status_ok(self) -> None:
         """Test if status request returns a valid response in case the API call succeeds"""
+        self.maxDiff = None
         api = GoeChargerApi("http://localhost:3000", "TOKEN")
         self.assertDictEqual(
             api.request_status(),

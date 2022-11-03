@@ -30,7 +30,7 @@ class GoeChargerStatusMapper:
         charger_err = GoeChargerApi.GO_ERR.get(str(status.get("err"))) or "unknown"
         charger_access = GoeChargerApi.GO_ACCESS.get(status.get("acs")) or "unknown"
         charging_allowed = (
-            GoeChargerApi.GO_charging_allowed.get(status.get("alw")) or "unknown"
+            GoeChargerApi.GO_CHARGING_ALLOWED.get(status.get("alw")) or "unknown"
         )
         cable_max_current = int(status.get("cbl", 0) or 0)
         cable_lock_mode = int(status.get("ust", 0))
@@ -237,7 +237,7 @@ class GoeChargerApi:
 
     GO_ACCESS: dict[int, str] = {0: "open", 1: "wait"}
 
-    GO_charging_allowed: dict[str | bool, str] = {
+    GO_CHARGING_ALLOWED: dict[str | bool, str] = {
         "0": "off",
         "1": "on",
         False: "off",
@@ -340,6 +340,17 @@ class GoeChargerApi:
             return self.__set_parameter("psm", str(phase))
 
         raise ValueError(f"phase={phase} is unsupported")
+
+    def set_access_control(self, status) -> dict | None:
+        """
+        Sets the access control.
+        0 - open
+        1 - wait
+        """
+        if status in [0, 1]:
+            return self.__set_parameter("acs", str(status))
+
+        raise ValueError(f"access control status={status} is unsupported")
 
     def request_status(self) -> dict:
         """

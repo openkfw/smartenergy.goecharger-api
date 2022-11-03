@@ -1,9 +1,7 @@
 """Test cases for the validation module"""
 import unittest
-import sys
-from src.goechargerv2.validations import validate_empty_string
 
-sys.path.append("../src")
+from src.goechargerv2.validations import validate_empty_string
 
 
 class Test(unittest.TestCase):

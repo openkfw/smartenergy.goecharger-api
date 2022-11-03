@@ -36,7 +36,7 @@ print(charger.request_status())
 ### Linting
 
 ```bash
-pylint $(git ls-files '*.py')
+pylint tests/*.py src/**/*.py
 ```
 
 ### Unit testing
