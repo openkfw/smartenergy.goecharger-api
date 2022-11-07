@@ -2,7 +2,7 @@
 import os
 
 from dotenv import load_dotenv
-from goechargerv2.goecharger import GoeChargerApi
+from src.goechargerv2.goecharger import GoeChargerApi
 
 load_dotenv()
 
