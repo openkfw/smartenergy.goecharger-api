@@ -28,7 +28,7 @@ class GoeChargerStatusMapper:
         )
         charger_absolute_max_current = int(status.get("ama", 0))
         charger_err = GoeChargerApi.GO_ERR.get(str(status.get("err"))) or "unknown"
-        charger_access = GoeChargerApi.GO_ACCESS.get(status.get("acs")) or "unknown"
+        charger_access = GoeChargerApi.GO_ACCESS.get(status.get("acs", False))
         charging_allowed = (
             GoeChargerApi.GO_CHARGING_ALLOWED.get(status.get("alw")) or "unknown"
         )
