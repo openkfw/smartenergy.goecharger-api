@@ -192,10 +192,10 @@ class GoeChargerApi:
         self.wait: bool = wait
 
     GO_CAR_STATUS: dict[str, str] = {
-        "1": "Charger ready, no vehicle",
-        "2": "charging",
-        "3": "Waiting for vehicle",
-        "4": "charging finished, vehicle still connected",
+        "1": "Charger ready, no car connected",
+        "2": "Car is charging",
+        "3": "Car connected, authentication required",
+        "4": "Charging finished, car can be disconnected",
     }
 
     GO_ADAPTER: dict[str, str] = {
@@ -235,7 +235,7 @@ class GoeChargerApi:
         "10": "INTERNAL",
     }
 
-    GO_ACCESS: dict[int, str] = {0: "open", 1: "wait"}
+    GO_ACCESS: dict[int, str] = {0: True, 1: False}
 
     GO_CHARGING_ALLOWED: dict[str | bool, str] = {
         "0": "off",
