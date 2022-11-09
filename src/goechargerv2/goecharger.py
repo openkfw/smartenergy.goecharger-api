@@ -63,21 +63,21 @@ class GoeChargerStatusMapper:
             )  # Deprecated: Just for chargers with old firmware
 
         current_session_charged_energy = round(int(status.get("dws", 0)) / 360000.0, 5)
-        charge_limit = int(status.get("dwo", 0) or 0) / 10.0
+        charge_limit = int(status.get("dwo", 0) or 0)
         adapter = GoeChargerApi.GO_ADAPTER.get(status.get("adi")) or "unknown"
         unlocked_by_card = int(status.get("uby", 0))
-        energy_total = int(status.get("eto", 0)) / 10.0
+        energy_total = int(status.get("eto", 0))
         energy_by_token = {
-            "token_a": int(status.get("eca", 0)) / 10,
-            "token_r": int(status.get("ecr", 0)) / 10,
-            "token_d": int(status.get("ecd", 0)) / 10,
-            "token_4": int(status.get("ec4", 0)) / 10,
-            "token_5": int(status.get("ec5", 0)) / 10,
-            "token_6": int(status.get("ec6", 0)) / 10,
-            "token_7": int(status.get("ec7", 0)) / 10,
-            "token_8": int(status.get("ec8", 0)) / 10,
-            "token_9": int(status.get("ec9", 0)) / 10,
-            "token_1": int(status.get("ec1", 0)) / 10,
+            "token_a": int(status.get("eca", 0)),
+            "token_r": int(status.get("ecr", 0)),
+            "token_d": int(status.get("ecd", 0)),
+            "token_4": int(status.get("ec4", 0)),
+            "token_5": int(status.get("ec5", 0)),
+            "token_6": int(status.get("ec6", 0)),
+            "token_7": int(status.get("ec7", 0)),
+            "token_8": int(status.get("ec8", 0)),
+            "token_9": int(status.get("ec9", 0)),
+            "token_1": int(status.get("ec1", 0)),
         }
         wifi = (
             "connected"

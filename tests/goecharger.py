@@ -69,7 +69,7 @@ EXPECTED_MAPPED_RESPONSE = {
         "token_r": 0.0,
     },
     "energy_since_car_connected": 0.0,
-    "energy_total": 1234.5,
+    "energy_total": 12345,
     "firmware": "058.2",
     "i_l1": 0.0,
     "i_l2": 0.0,
