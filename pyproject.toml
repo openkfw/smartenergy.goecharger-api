@@ -18,7 +18,7 @@ keywords = ["goecharger", "kfw", "api", "cloud"]
 name = "goechargerv2"
 readme = "README.md"
 requires-python = ">=3.7"
-version = "0.1.11"
+version = "0.1.12"
 
 [project.optional-dependencies]
 dev = ["black", "pylint", "python-dotenv"]

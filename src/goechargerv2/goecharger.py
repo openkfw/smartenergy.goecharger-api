@@ -26,7 +26,8 @@ class GoeChargerStatusMapper:
         charger_force_charging = GoeChargerApi.GO_FORCE_CHARGING.get(
             status.get("frc") or 0
         )
-        charger_absolute_max_current = int(status.get("ama", 0))
+        min_charging_current_limit = int(status.get("mca", 0))
+        max_charging_current_limit = int(status.get("ama", 0))
         charger_err = GoeChargerApi.GO_ERR.get(str(status.get("err"))) or "unknown"
         charger_access = GoeChargerApi.GO_ACCESS.get(status.get("acs", False))
         charging_allowed = (
@@ -102,7 +103,8 @@ class GoeChargerStatusMapper:
             "car_status": car_status,
             "charger_max_current": charger_max_current,
             "charger_force_charging": charger_force_charging,
-            "charger_absolute_max_current": charger_absolute_max_current,
+            "min_charging_current_limit": min_charging_current_limit,
+            "max_charging_current_limit": max_charging_current_limit,
             "charger_err": charger_err,
             "charger_access": charger_access,
             "charging_allowed": charging_allowed,
@@ -168,7 +170,6 @@ class GoeChargerStatusMapper:
             else None,
             "energy_since_car_connected": float(status.get("wh", 0)),
             "charging_duration": status.get("cdi", None),
-            "min_charging_current": int(status.get("mca", 0)),
             "min_charging_time": int(status.get("fmt", 0)),
             "car_consumption": float(status.get("cco", 0)),
             "rssi_signal_strength": int(status.get("rssi", 0)),
