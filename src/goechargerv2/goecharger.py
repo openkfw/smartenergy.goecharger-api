@@ -51,6 +51,7 @@ class GoeChargerStatusMapper:
         post_contactor_l1 = value_or_null(phase, 5)
 
         phase_switch_mode = status.get("psm", 0)
+        phases_number_connected = status.get("pnp", 0)
 
         if len(status.get("tma", [])) > 0:
             t_0 = float(value_or_null(status.get("tma", []), GoeChargerApi.TMA_0))
@@ -117,6 +118,7 @@ class GoeChargerStatusMapper:
             "post_contactor_l2": post_contactor_l2,
             "post_contactor_l3": post_contactor_l3,
             "phase_switch_mode": phase_switch_mode,
+            "phases_number_connected": phases_number_connected,
             "charger_temp": charger_temp,  # Deprecated: Just for chargers with old firmware
             "charger_temp0": round(
                 float(value_or_null(status.get("tma", []), GoeChargerApi.TMA_0)), 2
