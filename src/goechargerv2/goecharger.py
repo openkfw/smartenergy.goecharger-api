@@ -256,7 +256,7 @@ class GoeChargerApi:
             headers = {"Authorization": f"Basic {self.token}"}
 
             status_request = requests.get(
-                f"{self.host}/api/status?age=50000",
+                f"{self.host}/api/status",
                 headers=headers,
                 timeout=self.timeout,
             )
@@ -293,21 +293,27 @@ class GoeChargerApi:
         """
         Generic method to set any parameter and call the API.
         """
-        headers = {"Authorization": f"Basic {self.token}"}
+        try:
+            headers = {"Authorization": f"Basic {self.token}"}
 
-        payload = {}
-        payload[parameter] = value
-        set_request = requests.get(
-            f"{self.host}/api/set?age=50000",
-            headers=headers,
-            params=payload,
-            timeout=self.timeout,
-        )
+            payload = {}
+            payload[parameter] = value
+            set_request = requests.get(
+                f"{self.host}/api/set",
+                headers=headers,
+                params=payload,
+                timeout=self.timeout,
+            )
 
-        if self.wait:
-            self.__verify_set_parameter(parameter, value, 5)
+            if self.wait:
+                self.__verify_set_parameter(parameter, value, 5)
 
-        return GoeChargerStatusMapper().map_api_status_response(set_request.json())
+            return GoeChargerStatusMapper().map_api_status_response(set_request.json())
+        except (
+            requests.exceptions.ConnectTimeout,
+            requests.exceptions.ConnectionError,
+        ):
+            return {"success": False, "msg": "Request couldn't connect or timed out"}
 
     def set_force_charging(self, allow) -> dict:
         """
@@ -355,6 +361,20 @@ class GoeChargerApi:
 
         raise ValueError(f"access control status={status} is unsupported")
 
+    def set_transaction(self, status) -> dict | None:
+        """
+        Sets the access control.
+        None - no transaction
+        0 - without card - authenticate all users
+        """
+        if status is None:
+            return self.__set_parameter("trx", None)
+
+        if status in [0]:
+            return self.__set_parameter("trx", str(status))
+
+        raise ValueError(f"transaction status={status} is unsupported")
+
     def request_status(self) -> dict:
         """
         Call the GET API to retrieve a car status.
@@ -363,6 +383,9 @@ class GoeChargerApi:
         try:
             status = self.__query_status_api()
             if status is None or status.get("success") is False:
+                if status and status.get("reason", None) == "Data is outdated":
+                    return {"success": False, "msg": "Wallbox is offline"}
+
                 raise RuntimeError(f"Request failed with: {status}")
 
             response = GoeChargerStatusMapper().map_api_status_response(status)

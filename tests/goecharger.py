@@ -123,11 +123,17 @@ def mocked_requests_get(*args, **kwargs):
             """Return data as a JSON"""
             return self.json_data
 
-    if args[0] == "http://localhost:3000/api/status?age=50000":
+    if args[0] == "http://localhost:3000/api/status":
         return MockResponse(REQUEST_RESPONSE, 200)
 
-    if args[0] == "http://localhost:3001/api/status?age=50000":
+    if args[0] == "http://localhost:3001/api/status":
         return MockResponse(None, 200)
+
+    if args[0] == "http://localhost:3002/api/status":
+        return MockResponse(
+            {"success": False, "reason": "Data is outdated", "age": 122},
+            404,
+        )
 
     return MockResponse(None, 404)
 
@@ -163,6 +169,18 @@ class Test(unittest.TestCase):
         """Test if status request raises an error in case the API call fails"""
         api = GoeChargerApi("http://localhost:3001", "TOKEN")
         self.assertRaises(RuntimeError, api.request_status)
+
+    @mock.patch(
+        "requests.get",
+        mock.Mock(side_effect=mocked_requests_get),
+    )
+    def test_request_status_wallbox_offline(self) -> None:
+        """Test if status request returns offline status when data is outdated."""
+        api = GoeChargerApi("http://localhost:3002", "TOKEN")
+        self.assertEqual(
+            api.request_status(),
+            {"success": False, "msg": "Wallbox is offline"},
+        )
 
 
 if __name__ == "__main__":
