@@ -99,6 +99,7 @@ class GoeChargerStatusMapper:
         )
         timezone_offset = int(status.get("tof", 0)) - 100
         timezone_dst_offset = int(status.get("tds", 0))
+        transaction = status.get("trx")
 
         return {
             "car_status": car_status,
@@ -175,6 +176,7 @@ class GoeChargerStatusMapper:
             "min_charging_time": int(status.get("fmt", 0)),
             "car_consumption": float(status.get("cco", 0)),
             "rssi_signal_strength": int(status.get("rssi", 0)),
+            "transaction": transaction if transaction is None else int(transaction),
         }
 
 
@@ -275,16 +277,23 @@ class GoeChargerApi:
         the query status API to verify it.
         """
         status = self.__query_status_api()
-        fetched_value_int = int(status.get(parameter))
-        value_int = int(value)
+        fetched_value = status.get(parameter)
 
-        if fetched_value_int != value_int and retry == 0:
+        # if fetched value is defined, convert it to a proper type if needed
+        if fetched_value is not None:
+            if isinstance(value, int) and not isinstance(fetched_value, int):
+                fetched_value = int(fetched_value)
+
+            if isinstance(value, float) and not isinstance(fetched_value, float):
+                fetched_value = float(fetched_value)
+
+        if fetched_value != value and retry == 0:
             raise ValueError(
-                f"""Couldn't verify {parameter}, expected value={value_int},
-                 received value={fetched_value_int}"""
+                f"""Couldn't verify {parameter}, expected value={value},
+                 received value={fetched_value}"""
             )
 
-        if fetched_value_int != value_int and retry > 0:
+        if fetched_value != value and retry > 0:
             threading.Timer(
                 1.0, self.__verify_set_parameter, [parameter, value, retry - 1]
             ).start()

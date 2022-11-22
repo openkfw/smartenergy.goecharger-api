@@ -1,6 +1,7 @@
 """Test cases for the main Go-eCharger module"""
 import unittest
 
+from functools import partial
 from unittest import mock
 from src.goechargerv2.goecharger import GoeChargerStatusMapper, GoeChargerApi
 
@@ -35,7 +36,9 @@ REQUEST_RESPONSE = {
     "fmt": 100000,
     "cco": 12,
     "rssi": -40,
+    "trx": None,
 }
+REQUEST_RESPONSE_SET = REQUEST_RESPONSE.copy()
 EXPECTED_MAPPED_RESPONSE = {
     "adapter": "unknown",
     "allowed_ampere": None,
@@ -98,6 +101,7 @@ EXPECTED_MAPPED_RESPONSE = {
     "serial_number": "123",
     "timezone_dst_offset": 1,
     "timezone_offset": -90,
+    "transaction": None,
     "u_l1": 0,
     "u_l2": 0,
     "u_l3": 0,
@@ -123,7 +127,24 @@ def mocked_requests_get(*args, **kwargs):
             """Return data as a JSON"""
             return self.json_data
 
+    if args[0] == "http://localhost:3000/api/set":
+        # pylint: disable=global-statement
+        global REQUEST_RESPONSE_SET
+
+        REQUEST_RESPONSE_SET = dict(
+            REQUEST_RESPONSE_SET,
+            **kwargs["params"],
+        )
+        print(REQUEST_RESPONSE_SET)
+        return MockResponse(
+            REQUEST_RESPONSE_SET,
+            200,
+        )
+
     if args[0] == "http://localhost:3000/api/status":
+        if "set" in kwargs and kwargs["set"]:
+            return MockResponse(REQUEST_RESPONSE_SET, 200)
+
         return MockResponse(REQUEST_RESPONSE, 200)
 
     if args[0] == "http://localhost:3001/api/status":
@@ -181,6 +202,30 @@ class Test(unittest.TestCase):
             api.request_status(),
             {"success": False, "msg": "Wallbox is offline"},
         )
+
+    @mock.patch(
+        "requests.get",
+        mock.Mock(side_effect=partial(mocked_requests_get, set=True)),
+    )
+    def test_request_set_wait(self) -> None:
+        """Test if set request is changing the value and waiting for the change."""
+        api = GoeChargerApi("http://localhost:3000", "TOKEN", wait=True)
+
+        # test force charging
+        changed_frc = api.set_force_charging(True)
+        self.assertEqual(changed_frc["charger_force_charging"], "on")
+
+        # test max current
+        changed_amp = api.set_max_current(14)
+        self.assertEqual(changed_amp["charger_max_current"], 14)
+
+        # change transaction change
+        changed_trx_1 = api.set_transaction(0)
+        self.assertEqual(changed_trx_1["transaction"], 0)
+
+        # change transaction change
+        changed_trx_2 = api.set_transaction(None)
+        self.assertEqual(changed_trx_2["transaction"], None)
 
 
 if __name__ == "__main__":
