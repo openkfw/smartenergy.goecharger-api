@@ -135,7 +135,7 @@ def mocked_requests_get(*args, **kwargs):
             REQUEST_RESPONSE_SET,
             **kwargs["params"],
         )
-        print(REQUEST_RESPONSE_SET)
+
         return MockResponse(
             REQUEST_RESPONSE_SET,
             200,

@@ -324,7 +324,7 @@ class GoeChargerApi:
         ):
             return {"success": False, "msg": "Request couldn't connect or timed out"}
 
-    def set_force_charging(self, allow) -> dict:
+    def set_force_charging(self, allow: bool) -> dict:
         """
         Sets the force charging.
         0 - neutral
@@ -336,18 +336,18 @@ class GoeChargerApi:
 
         return self.__set_parameter("frc", 1)
 
-    def set_max_current(self, current) -> dict:
+    def set_max_current(self, current: int) -> dict:
         """
         Sets the current in Amperes. Minimum is 0, maximum is 32 Amperes.
         """
         if current < 0:
-            return self.__set_parameter("amp", str(0))
+            return self.__set_parameter("amp", 0)
         if current > 32:
-            return self.__set_parameter("amp", str(32))
+            return self.__set_parameter("amp", 32)
 
-        return self.__set_parameter("amp", str(current))
+        return self.__set_parameter("amp", current)
 
-    def set_phase(self, phase) -> dict | None:
+    def set_phase(self, phase: int) -> dict | None:
         """
         Sets the phase.
         0 - auto
@@ -355,22 +355,22 @@ class GoeChargerApi:
         2 - 3 phases
         """
         if phase in [0, 1, 2]:
-            return self.__set_parameter("psm", str(phase))
+            return self.__set_parameter("psm", phase)
 
         raise ValueError(f"phase={phase} is unsupported")
 
-    def set_access_control(self, status) -> dict | None:
+    def set_access_control(self, status: int) -> dict | None:
         """
         Sets the access control.
         0 - open
         1 - wait
         """
         if status in [0, 1]:
-            return self.__set_parameter("acs", str(status))
+            return self.__set_parameter("acs", status)
 
         raise ValueError(f"access control status={status} is unsupported")
 
-    def set_transaction(self, status) -> dict | None:
+    def set_transaction(self, status: int) -> dict | None:
         """
         Sets the access control.
         None - no transaction
@@ -380,7 +380,7 @@ class GoeChargerApi:
             return self.__set_parameter("trx", None)
 
         if status in [0]:
-            return self.__set_parameter("trx", str(status))
+            return self.__set_parameter("trx", status)
 
         raise ValueError(f"transaction status={status} is unsupported")
 
