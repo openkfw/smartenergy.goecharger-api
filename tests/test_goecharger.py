@@ -223,4 +223,4 @@ def test_request_set_wait() -> None:
 
     # change transaction change
     changed_trx_2 = api.set_transaction(None)
-    assert changed_trx_2["transaction"] == None
+    assert changed_trx_2["transaction"] is None

@@ -6,7 +6,7 @@ from src.goechargerv2.validations import validate_empty_string
 
 def test_validation_ok() -> None:
     """Test if a non empty string is valid, thus returns None"""
-    assert validate_empty_string("test", "hello") == None
+    assert validate_empty_string("test", "hello") is None
 
 
 def test_validation_error() -> None:
