@@ -10,3 +10,4 @@
 
 - [ ] Change is covered by unit test (if it makes sense)
 - [ ] Changelog is updated
+- [ ] Library version is increased (major/minor/bugfix)
