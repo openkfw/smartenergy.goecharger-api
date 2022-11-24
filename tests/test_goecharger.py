@@ -1,8 +1,9 @@
 """Test cases for the main Go-eCharger module"""
-import unittest
-
 from functools import partial
 from unittest import mock
+
+import pytest
+
 from src.goechargerv2.goecharger import GoeChargerStatusMapper, GoeChargerApi
 
 
@@ -159,74 +160,67 @@ def mocked_requests_get(*args, **kwargs):
     return MockResponse(None, 404)
 
 
-class Test(unittest.TestCase):
-    """Unit tests testing mapping of the response and API calls."""
-
-    def test_status_mapping_response(self) -> None:
-        """Test if response mapper correctly transforms property names"""
-        status_mapper = GoeChargerStatusMapper()
-        self.assertDictEqual(
-            status_mapper.map_api_status_response(REQUEST_RESPONSE),
-            EXPECTED_MAPPED_RESPONSE,
-        )
-
-    @mock.patch(
-        "requests.get",
-        mock.Mock(side_effect=mocked_requests_get),
+def test_status_mapping_response() -> None:
+    """Test if response mapper correctly transforms property names"""
+    status_mapper = GoeChargerStatusMapper()
+    assert (
+        status_mapper.map_api_status_response(REQUEST_RESPONSE)
+        == EXPECTED_MAPPED_RESPONSE
     )
-    def test_request_status_ok(self) -> None:
-        """Test if status request returns a valid response in case the API call succeeds"""
-        api = GoeChargerApi("http://localhost:3000", "TOKEN")
-        self.assertDictEqual(
-            api.request_status(),
-            EXPECTED_MAPPED_RESPONSE,
-        )
-
-    @mock.patch(
-        "requests.get",
-        mock.Mock(side_effect=mocked_requests_get),
-    )
-    def test_request_status_error(self) -> None:
-        """Test if status request raises an error in case the API call fails"""
-        api = GoeChargerApi("http://localhost:3001", "TOKEN")
-        self.assertRaises(RuntimeError, api.request_status)
-
-    @mock.patch(
-        "requests.get",
-        mock.Mock(side_effect=mocked_requests_get),
-    )
-    def test_request_status_wallbox_offline(self) -> None:
-        """Test if status request returns offline status when data is outdated."""
-        api = GoeChargerApi("http://localhost:3002", "TOKEN")
-        self.assertEqual(
-            api.request_status(),
-            {"success": False, "msg": "Wallbox is offline"},
-        )
-
-    @mock.patch(
-        "requests.get",
-        mock.Mock(side_effect=partial(mocked_requests_get, set=True)),
-    )
-    def test_request_set_wait(self) -> None:
-        """Test if set request is changing the value and waiting for the change."""
-        api = GoeChargerApi("http://localhost:3000", "TOKEN", wait=True)
-
-        # test force charging
-        changed_frc = api.set_force_charging(True)
-        self.assertEqual(changed_frc["charger_force_charging"], "on")
-
-        # test max current
-        changed_amp = api.set_max_current(14)
-        self.assertEqual(changed_amp["charger_max_current"], 14)
-
-        # change transaction change
-        changed_trx_1 = api.set_transaction(0)
-        self.assertEqual(changed_trx_1["transaction"], 0)
-
-        # change transaction change
-        changed_trx_2 = api.set_transaction(None)
-        self.assertEqual(changed_trx_2["transaction"], None)
 
 
-if __name__ == "__main__":
-    unittest.main()
+@mock.patch(
+    "requests.get",
+    mock.Mock(side_effect=mocked_requests_get),
+)
+def test_request_status_ok() -> None:
+    """Test if status request returns a valid response in case the API call succeeds"""
+    api = GoeChargerApi("http://localhost:3000", "TOKEN")
+    assert api.request_status() == EXPECTED_MAPPED_RESPONSE
+
+
+@mock.patch(
+    "requests.get",
+    mock.Mock(side_effect=mocked_requests_get),
+)
+def test_request_status_error() -> None:
+    """Test if status request raises an error in case the API call fails"""
+    api = GoeChargerApi("http://localhost:3001", "TOKEN")
+    with pytest.raises(Exception) as exception_info:
+        api.request_status()
+    assert str(exception_info.value) == "Request failed with: None"
+
+
+@mock.patch(
+    "requests.get",
+    mock.Mock(side_effect=mocked_requests_get),
+)
+def test_request_status_wallbox_offline() -> None:
+    """Test if status request returns offline status when data is outdated."""
+    api = GoeChargerApi("http://localhost:3002", "TOKEN")
+    assert api.request_status() == {"success": False, "msg": "Wallbox is offline"}
+
+
+@mock.patch(
+    "requests.get",
+    mock.Mock(side_effect=partial(mocked_requests_get, set=True)),
+)
+def test_request_set_wait() -> None:
+    """Test if set request is changing the value and waiting for the change."""
+    api = GoeChargerApi("http://localhost:3000", "TOKEN", wait=True)
+
+    # test force charging
+    changed_frc = api.set_force_charging(True)
+    assert changed_frc["charger_force_charging"] == "on"
+
+    # test max current
+    changed_amp = api.set_max_current(14)
+    assert changed_amp["charger_max_current"] == 14
+
+    # change transaction change
+    changed_trx_1 = api.set_transaction(0)
+    assert changed_trx_1["transaction"] == 0
+
+    # change transaction change
+    changed_trx_2 = api.set_transaction(None)
+    assert changed_trx_2["transaction"] is None

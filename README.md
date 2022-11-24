@@ -34,6 +34,13 @@ print(charger.request_status())
 
 ## Development
 
+## Install required pip packages
+
+```bash
+python3 -m pip install -r requirements.txt
+pre-commit install -t pre-push
+```
+
 ### Linting
 
 ```bash
@@ -43,5 +50,11 @@ pylint tests/*.py src/**/*.py
 ### Unit testing
 
 ```bash
-python3 -m unittest -v tests/*.py
+pytest
+
+# show logs
+pytest -o log_cli=true
+
+# code coverage
+pytest --durations=10 --cov-report term-missing --cov=src.goechargerv2 tests
 ```

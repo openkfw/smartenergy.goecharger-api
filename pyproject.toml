@@ -21,7 +21,7 @@ requires-python = ">=3.7"
 version = "0.2.2"
 
 [project.optional-dependencies]
-dev = ["black", "pylint", "python-dotenv"]
+dev = ["black", "pylint", "python-dotenv", "pytest", "pre-commit"]
 
 [project.urls]
 "Bug Tracker" = "https://github.com/openkfw/goechargerv2/issues"
