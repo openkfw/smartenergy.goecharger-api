@@ -1,10 +1,10 @@
-# goechargerv2
+# Go-eCharger API
 
-![workflow](https://github.com/openkfw/goechargerv2/actions/workflows/python-ci.yml/badge.svg)
-![workflow](https://github.com/openkfw/goechargerv2/actions/workflows/python-publish.yml/badge.svg)
-![PyPI version](https://badge.fury.io/py/goechargerv2.svg)
+![workflow](https://github.com/openkfw/smart_energy.goecharger_api/actions/workflows/python-ci.yml/badge.svg)
+![workflow](https://github.com/openkfw/smart_energy.goecharger_api/actions/workflows/python-publish.yml/badge.svg)
+![PyPI version](https://badge.fury.io/py/smart_energy.goecharger_api.svg)
 
-A python API to access the Go eCharger wallbox. Official Go-eCharger [API documentation](https://github.com/goecharger/go-eCharger-API-v2).
+A python API to access the Go-eCharger wallbox. Official Go-eCharger [API documentation](https://github.com/goecharger/go-eCharger-API-v2).
 
 ## Installing the library locally
 

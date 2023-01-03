@@ -9,7 +9,7 @@ astroid==2.12.11
 attrs==22.1.0
     # via pytest
 black==22.10.0
-    # via goechargerv2 (pyproject.toml)
+    # via smart-energy.goecharger-api (pyproject.toml)
 certifi==2022.9.24
     # via requests
 cfgv==3.3.1
@@ -54,19 +54,19 @@ platformdirs==2.5.2
 pluggy==1.0.0
     # via pytest
 pre-commit==2.20.0
-    # via goechargerv2 (pyproject.toml)
+    # via smart-energy.goecharger-api (pyproject.toml)
 pylint==2.15.4
-    # via goechargerv2 (pyproject.toml)
+    # via smart-energy.goecharger-api (pyproject.toml)
 pyparsing==3.0.9
     # via packaging
 pytest==7.2.0
-    # via goechargerv2 (pyproject.toml)
+    # via smart-energy.goecharger-api (pyproject.toml)
 python-dotenv==0.21.0
-    # via goechargerv2 (pyproject.toml)
+    # via smart-energy.goecharger-api (pyproject.toml)
 pyyaml==6.0
     # via pre-commit
 requests==2.27.1
-    # via goechargerv2 (pyproject.toml)
+    # via smart-energy.goecharger-api (pyproject.toml)
 toml==0.10.2
     # via pre-commit
 tomli==2.0.1
