@@ -20,4 +20,4 @@ author: ''
 
 ## Versions (please complete the following information):**
 
- - smart_energy.goecharger_api
+ - smartenergy.goecharger-api
