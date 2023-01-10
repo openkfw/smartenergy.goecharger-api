@@ -1,8 +1,8 @@
 # Go-eCharger API
 
-![workflow](https://github.com/openkfw/smart_energy.goecharger_api/actions/workflows/python-ci.yml/badge.svg)
-![workflow](https://github.com/openkfw/smart_energy.goecharger_api/actions/workflows/python-publish.yml/badge.svg)
-![PyPI version](https://badge.fury.io/py/smart_energy.goecharger_api.svg)
+![workflow](https://github.com/openkfw/smartenergy.goecharger-api/actions/workflows/python-ci.yml/badge.svg)
+![workflow](https://github.com/openkfw/smartenergy.goecharger-api/actions/workflows/python-publish.yml/badge.svg)
+![PyPI version](https://badge.fury.io/py/smartenergy.goecharger-api.svg)
 
 A python API to access the Go-eCharger wallbox. Official Go-eCharger [API documentation](https://github.com/goecharger/go-eCharger-API-v2).
 

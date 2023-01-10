@@ -15,14 +15,14 @@ classifiers = [
 dependencies = ["requests >= 2.27.1"]
 description = "API library for the go-eCharger."
 keywords = ["goecharger", "kfw", "api", "cloud"]
-name = "smart_energy.goecharger_api"
+name = "smartenergy.goecharger-api"
 readme = "README.md"
 requires-python = ">=3.7"
-version = "0.3.0"
+version = "0.4.0"
 
 [project.optional-dependencies]
 dev = ["black", "pylint", "python-dotenv", "pytest", "pre-commit"]
 
 [project.urls]
-"Bug Tracker" = "https://github.com/openkfw/smart_energy.goecharger_api/issues"
-"Homepage" = "https://github.com/openkfw/smart_energy.goecharger_api"
+"Bug Tracker" = "https://github.com/openkfw/smartenergy.goecharger-api/issues"
+"Homepage" = "https://github.com/openkfw/smartenergy.goecharger-api"
