@@ -15,10 +15,10 @@ classifiers = [
 dependencies = ["requests >= 2.27.1"]
 description = "API library for the go-eCharger."
 keywords = ["goecharger", "kfw", "api", "cloud"]
-name = "smartenergy.goecharger-api"
+name = "smart-energy.goecharger-api"
 readme = "README.md"
 requires-python = ">=3.7"
-version = "0.4.0"
+version = "0.3.1"
 
 [project.optional-dependencies]
 dev = ["black", "pylint", "python-dotenv", "pytest", "pre-commit"]

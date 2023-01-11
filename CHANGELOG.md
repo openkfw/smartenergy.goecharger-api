@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## __0.4.0__ - 2023-01-10
+## __0.3.1__ - 2023-01-11
 
 ### Changed
 
-- Renamed library to the `smartenergy.goecharger-api`.
+- Updated links as repository was renamed.
 
 ## __0.3.0__ - 2023-01-03
 
